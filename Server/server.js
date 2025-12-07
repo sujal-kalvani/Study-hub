@@ -1,20 +1,25 @@
 const express = require("express")
-const connectDB =require("./config/db")
-const app=express()
+const connectDB = require("./config/db")
+const cors = require("cors")
+const app = express()
 require('dotenv').config()
-const PORT=process.env.PORT || 8000
+const PORT = process.env.PORT || 8000
 
-const home_router = require("./routes/home.js")
+app.use(cors({
+    origin: process.env.Fronted_url,
+    credentials: true,
+}))
 
-// routers
-// 1. home router
-app.use('/',home_router)
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
+// routes
+app.use('/', require("./routes/home.js"))
+app.use('/signup', require("./routes/Signup_routes.js"))
 
-app.use(express.urlencoded({ extended:true }))
+// connect DB and start server
 connectDB().then(() => {
     app.listen(PORT, () => {
-        console.log(`Server running on ${PORT} port`)
-        console.log("connected to db")
+        console.log(`Server running on ${PORT}`)
     })
 })

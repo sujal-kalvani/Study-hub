@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { toggleState } from "../redux/toggleSlice";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch=useDispatch();
 
   return (
     <nav className="bg-white shadow-md fixed w-full z-20 top-0 left-0">
@@ -31,7 +34,7 @@ export default function Navbar() {
           <div className="hidden md:flex space-x-8 items-center">
             {/* <Link to="/" className="text-gray-700 hover:text-blue-600">Home</Link>
             <Link to="/about" className="text-gray-700 hover:text-blue-600">About</Link> */}
-            <Link to="/signup" className="backgroundcolor w-30 h-10 text-white border-r-8 flex justify-center items-center rounded-xl">Sign Up</Link>
+            <Link to="/signup" className="backgroundcolor w-30 h-10 text-white border-r-8 flex justify-center items-center rounded-xl" onClick={()=> dispatch(toggleState())}>Sign Up</Link>
           </div>
 
           <div className="md:hidden flex items-center">
@@ -54,6 +57,7 @@ export default function Navbar() {
         <div className="md:hidden bg-white shadow-md">
           <Link to="/" className="block px-4 py-3 text-gray-700 hover:bg-gray-100">Home</Link>
           <Link to="/about" className="block px-4 py-3 text-gray-700 hover:bg-gray-100">About</Link>
+          <Link to="/signup" className="backgroundcolor w-30 h-10 text-white border-r-8 flex justify-center items-center rounded-xl" onClick={()=> dispatch(toggleState())}>Sign Up</Link>
         </div>
       )}
     </nav>

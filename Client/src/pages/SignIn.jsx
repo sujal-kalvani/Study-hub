@@ -1,17 +1,15 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { IoMdClose } from "react-icons/io";
 import { IoEyeOff, IoEye } from "react-icons/io5";
 import { toggleState } from "../redux/toggleSlice";
-import { Link } from "react-router-dom";
-import SummaryApi from "../apis/index"
-import {toast} from "react-toastify"
+import { Link } from 'react-router-dom';
 
-const SignUp = () => {
+export default function SignIn() {
   const signUp = useSelector((state) => state.toggle.signup);
   const dispatch = useDispatch();
 
-  // Local states
+  // Local form states
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -19,11 +17,10 @@ const SignUp = () => {
   // Validation errors
   const [errors, setErrors] = useState({});
 
-  // disable scroll
+  // prevent scroll
   if (signUp) document.body.classList.add("overflow-hidden");
   else document.body.classList.remove("overflow-hidden");
 
-  // Validation
   const validateForm = () => {
     const newErrors = {};
 
@@ -40,44 +37,13 @@ const SignUp = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Submit
-  const handleSubmit = async (e) => {
-    console.log("Function is called");
-    
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!validateForm()) return;
-
-    const data = { email, password };
-
-    try {
-      const response = await fetch(SummaryApi.signup.url, {
-        method: SummaryApi.signup.method,
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const responseData = await response.json();
-
-      if (!response.ok) {
-        toast.error(responseData.message || "Signup Failed");
-        return;
-      }
-
-      toast.success(responseData.message || "Sign Up Successfully!");
-      console.log("data", responseData);
-
-    } catch (error) {
-      toast.error("Something went wrong!");
-      console.error(error);
+    if (validateForm()) {
+      alert("Signed in successfully!");
+      console.log({ email, password });
     }
-  };
-
-  // disable space in password
-  const handleKeyDown = (e) => {
-    if (e.key === " ") e.preventDefault();
   };
 
   return (
@@ -101,9 +67,9 @@ const SignUp = () => {
                 xl:w-[25%]
                 min-h-[64vh]
                 shadow-lg
+                flex justify-center items-center
               "
             >
-              {/* Close Button */}
               <div
                 onClick={() => dispatch(toggleState())}
                 className="absolute top-3 right-3 w-8 h-8 flex justify-center items-center rounded-full hover:bg-gray-200 cursor-pointer"
@@ -112,11 +78,18 @@ const SignUp = () => {
               </div>
 
               <div className="flex justify-center items-center mt-4 flex-col">
-                <h1 className="font-bold text-xl text-black">Create your account</h1>
-                <p className="mt-2 opacity-50">Welcome! Please fill in the details to get started</p>
+                <h1 className="font-bold text-xl text-black">
+                  Sign in to LMS
+                </h1>
 
-                <form onSubmit={handleSubmit} className="flex flex-col w-full mt-7 gap-6">
-                  
+                <p className="mt-2 opacity-50">
+                  Welcome back! Please sign in to continue to learning from our platform
+                </p>
+
+                <form
+                  onSubmit={handleSubmit}
+                  className="flex flex-col w-full mt-7 gap-6"
+                >
                   {/* Email */}
                   <div className="flex flex-col gap-1">
                     <label>Email address</label>
@@ -126,23 +99,25 @@ const SignUp = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="w-full border border-gray-300 rounded-md px-3 py-2 
-                      focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                     />
-                    {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+                    {errors.email && (
+                      <p className="text-red-500 text-sm">{errors.email}</p>
+                    )}
                   </div>
 
                   {/* Password */}
                   <div className="flex flex-col gap-1">
                     <label>Password</label>
+
                     <div className="relative">
                       <input
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter your password"
-                        onKeyDown={handleKeyDown}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className="w-full border border-gray-300 rounded-md px-3 py-2 
-                        focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                       />
 
                       {/* Eye Toggle */}
@@ -154,25 +129,25 @@ const SignUp = () => {
                         {showPassword ? <IoEyeOff size={20} /> : <IoEye size={20} />}
                       </button>
                     </div>
-                    {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+
+                    {errors.password && (
+                      <p className="text-red-500 text-sm">{errors.password}</p>
+                    )}
                   </div>
 
                   {/* Submit */}
                   <input
                     type="submit"
                     value="Continue"
-                    className="w-full rounded-md bg-black text-white py-2 
-                    cursor-pointer hover:bg-gray-800 transition mt-3"
-                    onClick={handleSubmit}
+                    className="w-full rounded-md bg-black text-white py-2 cursor-pointer hover:bg-gray-800 transition mt-3"
                   />
 
                   <p className="text-center">
-                    Already have an account?{" "}
-                    <Link to="/signin" className="hover:underline">
-                      Sign in
+                    Don't have an account?{" "}
+                    <Link to="/signup" className="hover:underline">
+                      Sign up
                     </Link>
                   </p>
-
                 </form>
               </div>
             </div>
@@ -181,6 +156,4 @@ const SignUp = () => {
       </div>
     </>
   );
-};
-
-export default SignUp;
+}
