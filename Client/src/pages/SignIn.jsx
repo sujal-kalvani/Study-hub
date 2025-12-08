@@ -4,8 +4,12 @@ import { IoMdClose } from "react-icons/io";
 import { IoEyeOff, IoEye } from "react-icons/io5";
 import { toggleState } from "../redux/toggleSlice";
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import SummaryApi from '../apis';
+import { useNavigate } from "react-router-dom";
 
 export default function SignIn() {
+  const navigate = useNavigate();
   const signUp = useSelector((state) => state.toggle.signup);
   const dispatch = useDispatch();
 
@@ -37,12 +41,32 @@ export default function SignIn() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
 
     if (validateForm()) {
-      alert("Signed in successfully!");
-      console.log({ email, password });
+      const data = { email, password };
+
+    try {
+      const response = await fetch(SummaryApi.login.url, {
+        method: SummaryApi.login.method,
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        toast.error(responseData.message || "Signin failed!");
+        return;
+      }
+
+      toast.success("Signup successful!");
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      toast.error("User not found!");
+    }
     }
   };
 
@@ -140,7 +164,7 @@ export default function SignIn() {
                     type="submit"
                     value="Continue"
                     className="w-full rounded-md bg-black text-white py-2 cursor-pointer hover:bg-gray-800 transition mt-3"
-                  />
+                    />
 
                   <p className="text-center">
                     Don't have an account?{" "}

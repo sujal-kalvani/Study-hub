@@ -6,7 +6,7 @@ require('dotenv').config()
 const PORT = process.env.PORT || 8000
 
 app.use(cors({
-    origin: process.env.Fronted_url,
+    origin: process.env.FRONTEND_URL,
     credentials: true,
 }))
 
@@ -16,6 +16,7 @@ app.use(express.urlencoded({ extended: true }))
 // routes
 app.use('/', require("./routes/home.js"))
 app.use('/signup', require("./routes/Signup_routes.js"))
+app.use("/login", require("./routes/Signin_routes.js"))
 
 // connect DB and start server
 connectDB().then(() => {
