@@ -7,10 +7,12 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import SummaryApi from '../apis';
 import { useNavigate } from "react-router-dom";
+import { loginSuccess } from "../redux/AuthSlice";
 
 export default function SignIn() {
   const navigate = useNavigate();
   const signUp = useSelector((state) => state.toggle.signup);
+
   const dispatch = useDispatch();
 
   // Local form states
@@ -41,34 +43,44 @@ export default function SignIn() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async(e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (validateForm()) {
-      const data = { email, password };
+  if (!validateForm()) return;
 
-    try {
-      const response = await fetch(SummaryApi.login.url, {
-        method: SummaryApi.login.method,
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(data),
-      });
+  const data = { email, password };
 
-      const responseData = await response.json();
+  try {
+    const response = await fetch(SummaryApi.login.url, {
+      method: SummaryApi.login.method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
 
-      if (!response.ok) {
-        toast.error(responseData.message || "Signin failed!");
-        return;
-      }
+    const responseData = await response.json();
 
-      toast.success("Signup successful!");
-      navigate("/");
-    } catch (error) {
-      console.error(error);
-      toast.error("User not found!");
+    if (!response.ok) {
+      toast.error(responseData.message || "Signin failed!");
+      return;
     }
-    }
-  };
+
+    // ✅ SAVE AUTH DATA
+    dispatch(
+      loginSuccess({
+        token: responseData.token,
+        user: responseData.user,
+      })
+    );
+
+    toast.success("Login successful!");
+    navigate("/");
+
+  } catch (error) {
+    console.error(error);
+    toast.error("User not found!");
+  }
+};
+
 
   return (
     <>
@@ -164,7 +176,7 @@ export default function SignIn() {
                     type="submit"
                     value="Continue"
                     className="w-full rounded-md bg-black text-white py-2 cursor-pointer hover:bg-gray-800 transition mt-3"
-                    />
+                  />
 
                   <p className="text-center">
                     Don't have an account?{" "}

@@ -12,11 +12,14 @@ app.use(cors({
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use("/images", express.static("images"));
 
 // routes
 app.use('/', require("./routes/home.js"))
 app.use('/signup', require("./routes/Signup_routes.js"))
-app.use("/login", require("./routes/Signin_routes.js"))
+app.use("/signin", require("./routes/Signin_routes.js"))
+app.use("/profile",require("./routes/Profile_routes.js"))
+app.use('/me',require('./routes/getProfileRoutes.js'))
 
 // connect DB and start server
 connectDB().then(() => {

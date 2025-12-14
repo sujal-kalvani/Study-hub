@@ -7,10 +7,19 @@ const SummaryApi={
     },
 
     login:{
-        url:`${backendDomain}/login`,
+        url:`${backendDomain}/signin`,
         method:"post"
-    }
+    },
+
+    profile:{
+        url:`${backendDomain}/profile`,
+        method:"put"
+    },
     
+    getProfile:{
+        url:`${backendDomain}/me`,
+        method:"get"
+    }
 }
 
 export default SummaryApi

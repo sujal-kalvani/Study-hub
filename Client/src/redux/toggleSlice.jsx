@@ -5,11 +5,13 @@ const toggleSlice = createSlice({
   initialState: {
     signup: true,
   },
+  
   reducers: {
     toggleState: (state) => {
       state.signup = !state.signup;
     },
   },
+
 });
 
 export const { toggleState } = toggleSlice.actions;

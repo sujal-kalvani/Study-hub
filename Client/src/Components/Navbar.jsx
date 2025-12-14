@@ -1,11 +1,97 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toggleState } from "../redux/toggleSlice";
+import { useSelector } from "react-redux";
+import { IoLogOutOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { logout } from "../redux/AuthSlice";
+import { CgProfile } from "react-icons/cg";
+import SummaryApi from '../apis';
+import { useEffect } from "react";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const dispatch=useDispatch();
+
+  const token = useSelector((state) => state.auth.token);
+  const [profile, setProfile] = useState(null)
+
+  const [isOpen, setIsOpen] = useState(false)
+  const dispatch = useDispatch();
+  const { isAuthenticated} = useSelector((state) => state.auth);
+const [refreshProfile, setRefreshProfile] = useState(false);
+  // console.log(user);
+    // console.log(profile?.name);
+    
+  const avatarUrl = profile?.profileImage
+  ? `http://localhost:8000${profile.profileImage}`
+  : null;
+
+  const navigate = useNavigate();
+
+  const fileInputRef = useRef(null)
+
+  const handleIconClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+
+    const formData = new FormData()
+    formData.append("profileImage", file)
+
+    try {
+      const response = await fetch(SummaryApi.profile.url, {
+        method: SummaryApi.profile.method,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const responseData = await response.json()
+      
+
+      if (!response.ok) {
+        toast.error(responseData.message || "Profile upload failed!");
+        return;
+      }
+      toast.success("Profile Upload successful!");
+      setRefreshProfile(prev => !prev);
+    } catch (error) {
+      // console.error(error);
+      toast.error(error);
+    }
+
+  };
+
+  useEffect(()=>{
+ const fetchProfile=async()=>{
+
+    const response=await fetch(SummaryApi.getProfile.url,{
+      method:SummaryApi.getProfile.method,
+       headers: { Authorization: `Bearer ${token}`,},
+    })
+
+    const data=await response.json();
+
+    if (data.success) {
+    setProfile(data.user);  
+  }
+    
+  }
+  fetchProfile()
+  },[refreshProfile])
+ 
+
+
+  const Logout = () => {
+    dispatch(logout())
+    toast.success("Logged out");
+    navigate("/signin");
+  };
+
 
   return (
     <nav className="bg-white shadow-md fixed w-full z-20 top-0 left-0">
@@ -24,18 +110,51 @@ export default function Navbar() {
                 font-size="25"
                 font-weight="700"
                 fill="#0260FF"
-                >
+              >
                 Study-Hub
               </text>
             </svg>
 
           </div>
 
-          <div className="hidden md:flex space-x-8 items-center">
-            {/* <Link to="/" className="text-gray-700 hover:text-blue-600">Home</Link>
-            <Link to="/about" className="text-gray-700 hover:text-blue-600">About</Link> */}
-            <Link to="/signup" className="backgroundcolor w-30 h-10 text-white border-r-8 flex justify-center items-center rounded-xl" onClick={()=> dispatch(toggleState())}>Sign Up</Link>
-          </div>
+          {!isAuthenticated && (<div className="hidden md:flex space-x-8 items-center">
+            <Link to="/signin" className=" w-30 h-10 text-blue-600 flex justify-center items-center hover:underline" onClick={() => dispatch(toggleState())}>Login</Link>
+            <Link to="/signup" className="rounded-xl backgroundcolor w-36 h-10 text-white border-r-8 flex justify-center items-center" onClick={() => dispatch(toggleState())}>Create Account</Link>
+          </div>)
+          }
+
+          {
+            isAuthenticated && (
+              <div className="flex justify-center items-center w-56 gap-10">
+                {avatarUrl? (
+                  <>
+                  <div className="flex justify-center items-center gap-2 w-full">
+                  <img
+                    src={avatarUrl}
+                    alt="profile"
+                    className="w-12 h-12 rounded-full cursor-pointer"
+                    onClick={handleIconClick}
+                  />
+                  <p>{profile?.name}</p>
+                  </div>
+                  </>
+                ) : (
+                  <>
+                  <CgProfile
+                    className="w-12 h-12 cursor-pointer"
+                    onClick={handleIconClick}
+                  />
+                  <p>Guest</p>
+                  </>
+                )}
+                <input type="file" name="file" id="file" ref={fileInputRef} style={{ display: "none" }} onChange={handleFileChange} />
+                <div className="flex justify-center items-center cursor-pointer" onClick={Logout}>
+                  <Link className="w-14 h-10 flex justify-center items-center">Logout</Link>
+                  <IoLogOutOutline className="w-6 h-6" />
+                </div>
+              </div>
+            )
+          }
 
           <div className="md:hidden flex items-center">
             <button onClick={() => setIsOpen(!isOpen)} className="focus:outline-none">
@@ -57,7 +176,7 @@ export default function Navbar() {
         <div className="md:hidden bg-white shadow-md">
           <Link to="/" className="block px-4 py-3 text-gray-700 hover:bg-gray-100">Home</Link>
           <Link to="/about" className="block px-4 py-3 text-gray-700 hover:bg-gray-100">About</Link>
-          <Link to="/signup" className="backgroundcolor w-30 h-10 text-white border-r-8 flex justify-center items-center rounded-xl" onClick={()=> dispatch(toggleState())}>Sign Up</Link>
+          <Link to="/signup" className="backgroundcolor w-30 h-10 text-white border-r-8 flex justify-center items-center rounded-xl" onClick={() => dispatch(toggleState())}>Sign Up</Link>
         </div>
       )}
     </nav>
