@@ -20,6 +20,9 @@ app.use('/signup', require("./routes/Signup_routes.js"))
 app.use("/signin", require("./routes/Signin_routes.js"))
 app.use("/profile",require("./routes/Profile_routes.js"))
 app.use('/me',require('./routes/getProfileRoutes.js'))
+app.use("/ChangePassword",require('./routes/ChangePasswordRoutes.js'))
+app.use("/ResetPassword",require('./routes/ResetPasswordRoutes.js'))
+app.use("/verifyOtp",require('./routes/VerifyOtpRoutes.js'))
 
 // connect DB and start server
 connectDB().then(() => {

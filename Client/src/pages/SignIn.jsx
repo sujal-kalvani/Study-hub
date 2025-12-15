@@ -43,43 +43,43 @@ export default function SignIn() {
     return Object.keys(newErrors).length === 0;
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!validateForm()) return;
+    if (!validateForm()) return;
 
-  const data = { email, password };
+    const data = { email, password };
 
-  try {
-    const response = await fetch(SummaryApi.login.url, {
-      method: SummaryApi.login.method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    try {
+      const response = await fetch(SummaryApi.login.url, {
+        method: SummaryApi.login.method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
 
-    const responseData = await response.json();
+      const responseData = await response.json();
 
-    if (!response.ok) {
-      toast.error(responseData.message || "Signin failed!");
-      return;
+      if (!response.ok) {
+        toast.error(responseData.message || "Signin failed!");
+        return;
+      }
+
+      // ✅ SAVE AUTH DATA
+      dispatch(
+        loginSuccess({
+          token: responseData.token,
+          user: responseData.user,
+        })
+      );
+
+      toast.success("Login successful!");
+      navigate("/");
+
+    } catch (error) {
+      console.error(error);
+      toast.error("User not found!");
     }
-
-    // ✅ SAVE AUTH DATA
-    dispatch(
-      loginSuccess({
-        token: responseData.token,
-        user: responseData.user,
-      })
-    );
-
-    toast.success("Login successful!");
-    navigate("/");
-
-  } catch (error) {
-    console.error(error);
-    toast.error("User not found!");
-  }
-};
+  };
 
 
   return (
@@ -169,18 +169,22 @@ const handleSubmit = async (e) => {
                     {errors.password && (
                       <p className="text-red-500 text-sm">{errors.password}</p>
                     )}
+                    <div className="flex justify-center gap-1 mt-4">
+                      <p>Do you forget your password?</p>
+                      <Link to="/changePassword" className="text-blue-600 hover:underline">Forget Password</Link>
+                    </div>
                   </div>
 
                   {/* Submit */}
                   <input
                     type="submit"
                     value="Continue"
-                    className="w-full rounded-md bg-black text-white py-2 cursor-pointer hover:bg-gray-800 transition mt-3"
+                    className="w-full rounded-md bg-black text-white py-2 cursor-pointer hover:bg-gray-800 transition mt-1"
                   />
 
                   <p className="text-center">
                     Don't have an account?{" "}
-                    <Link to="/signup" className="hover:underline">
+                    <Link to="/signup" className="hover:underline text-blue-600">
                       Sign up
                     </Link>
                   </p>

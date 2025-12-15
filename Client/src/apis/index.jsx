@@ -19,7 +19,20 @@ const SummaryApi={
     getProfile:{
         url:`${backendDomain}/me`,
         method:"get"
-    }
+    },
+
+    changepassword:{
+        url:`${backendDomain}/ChangePassword`,
+        method:"post",
+    },
+    ResetPassword:{
+        url:`${backendDomain}/ResetPassword`,
+        method:"post",
+    },
+    verifyOtp:{
+        url:`${backendDomain}/verifyOtp`,
+        method:"post"
+    },
 }
 
 export default SummaryApi

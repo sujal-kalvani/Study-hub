@@ -18,6 +18,8 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 6,
     },
+    otp:{type:Number,default:null},
+    otpExpiresAt:{type:Date, default:null},
 
     role: {
       type: String,
