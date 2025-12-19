@@ -7,6 +7,7 @@ import { IoLogOutOutline } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import { toast } from "react-toastify";
 import SummaryApi from "../apis";
+import { jwtDecode } from "jwt-decode";
 
 export default function Navbar() {
   const dispatch = useDispatch();
@@ -18,6 +19,8 @@ export default function Navbar() {
   const [profile, setProfile] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [refreshProfile, setRefreshProfile] = useState(false);
+
+  const [educator,Seteducator]=useState(null)
 
   const avatarUrl = profile?.profileImage
     ? `http://localhost:8000${profile.profileImage}`
@@ -63,6 +66,9 @@ export default function Navbar() {
       });
 
       const data = await response.json();
+      // console.log(data.user.role);
+      Seteducator(data.user.role)
+      
       if (data.success) setProfile(data.user);
     };
 
@@ -75,13 +81,35 @@ export default function Navbar() {
     navigate("/signin");
   };
 
+  const become_educator = async() => {
+    
+    const response = await fetch(SummaryApi.becomeEducator.url, {
+        method: SummaryApi.becomeEducator.method,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const data = await response.json();
+      if (data.success)
+      {
+        toast.success("Become Educator successfully") 
+        get_role();
+        window.location.reload();
+      }
+      else
+      toast.error("You are already Educator")
+  }
+
+  const educatorDashboard=()=>{
+    navigate("educator-dashboard")
+  }
+
   return (
     <nav className="bg-white shadow-md fixed w-full z-20 top-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-           <svg xmlns="http://www.w3.org/2000/svg" width="170" height="40" viewBox="0 0 180 40" fill="none"> <g transform="translate(0,3)"> <path fill-rule="evenodd" clip-rule="evenodd" d="M17 34C26.3888 34 34 26.3888 34 17C34 7.61116 26.3888 0 17 0C7.61114 0 0 7.61116 0 17C0 26.3888 7.61114 34 17 34ZM22.3034 7.91931C22.5616 7.00234 21.6717 6.46011 20.859 7.0391L9.51415 15.1211C8.63278 15.749 8.77142 17 9.7224 17H12.7098V16.9768H18.5321L13.788 18.6508L11.6966 26.0807C11.4385 26.9977 12.3282 27.5399 13.141 26.9609L24.4859 18.8789C25.3672 18.251 25.2285 17 24.2776 17H19.7473L22.3034 7.91931Z" fill="#0260FF" /> </g> <text x="45" y="30" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700" fill="#0260FF" > Study-Hub </text> </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="170" height="40" viewBox="0 0 180 40" fill="none"> <g transform="translate(0,3)"> <path fill-rule="evenodd" clip-rule="evenodd" d="M17 34C26.3888 34 34 26.3888 34 17C34 7.61116 26.3888 0 17 0C7.61114 0 0 7.61116 0 17C0 26.3888 7.61114 34 17 34ZM22.3034 7.91931C22.5616 7.00234 21.6717 6.46011 20.859 7.0391L9.51415 15.1211C8.63278 15.749 8.77142 17 9.7224 17H12.7098V16.9768H18.5321L13.788 18.6508L11.6966 26.0807C11.4385 26.9977 12.3282 27.5399 13.141 26.9609L24.4859 18.8789C25.3672 18.251 25.2285 17 24.2776 17H19.7473L22.3034 7.91931Z" fill="#0260FF" /> </g> <text x="45" y="30" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700" fill="#0260FF" > Study-Hub </text> </svg>
           </Link>
 
           {/* Desktop Menu */}
@@ -101,6 +129,10 @@ export default function Navbar() {
 
           {isAuthenticated && (
             <div className="hidden md:flex items-center gap-6">
+              {
+                educator=="educator"?(<button className="cursor-pointer" onClick={educatorDashboard}>Educator Dashboard</button>):(
+                <button className="cursor-pointer" onClick={become_educator}>Become Educator</button>)
+              }
               <div
                 className="flex items-center gap-2 cursor-pointer"
                 onClick={handleIconClick}
@@ -172,10 +204,15 @@ export default function Navbar() {
             </>
           ) : (
             <>
+              {
+                educator=="educator"?(<button className="cursor-pointer" onClick={educatorDashboard}>Educator Dashboard</button>):(
+                <button className="cursor-pointer" onClick={become_educator}>Become Educator</button>)
+              }
               <div
                 className="flex items-center gap-2 py-2 cursor-pointer"
                 onClick={handleIconClick}
               >
+
                 {avatarUrl ? (
                   <img src={avatarUrl} className="w-10 h-10 rounded-full" />
                 ) : (

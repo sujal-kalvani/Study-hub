@@ -23,6 +23,7 @@ app.use('/me',require('./routes/getProfileRoutes.js'))
 app.use("/ChangePassword",require('./routes/ChangePasswordRoutes.js'))
 app.use("/ResetPassword",require('./routes/ResetPasswordRoutes.js'))
 app.use("/verifyOtp",require('./routes/VerifyOtpRoutes.js'))
+app.use("/become-educator",require("./routes/become_educator_routes.js"))
 
 // connect DB and start server
 connectDB().then(() => {

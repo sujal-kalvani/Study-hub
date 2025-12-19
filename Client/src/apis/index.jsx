@@ -33,6 +33,10 @@ const SummaryApi={
         url:`${backendDomain}/verifyOtp`,
         method:"post"
     },
+    becomeEducator:{
+        url:`${backendDomain}/become-educator`,
+        method:"put"
+    }
 }
 
 export default SummaryApi
