@@ -36,6 +36,10 @@ const SummaryApi={
     becomeEducator:{
         url:`${backendDomain}/become-educator`,
         method:"put"
+    },
+    AddCourses:{
+        url:`${backendDomain}/create-course`,
+        method:"post"
     }
 }
 

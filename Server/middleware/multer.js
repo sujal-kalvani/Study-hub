@@ -3,13 +3,30 @@ const path = require("path");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "images/profile");
+    // 🔥 dynamic folder
+    if (file.fieldname === "profileImage") {
+      cb(null, "images/profile");
+    } else if (file.fieldname === "thumbnail") {
+      cb(null, "images/courses");
+    } else {
+      cb(new Error("Invalid upload field"), null);
+    }
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
+    const uniqueName =
+      Date.now() + "-" + Math.round(Math.random() * 1e9) + path.extname(file.originalname);
+    cb(null, uniqueName);
+  }
 });
 
-const upload = multer({ storage });
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image/")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only image files allowed"), false);
+  }
+};
 
-module.exports = upload; 
+const upload = multer({ storage, fileFilter });
+
+module.exports = upload;

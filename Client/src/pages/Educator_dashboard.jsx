@@ -1,23 +1,55 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import SidebarItems from '../Components/Educator/Sidebar'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
+import Navbar from '../Components/Navbar'
 
 export default function Educator_dashboard() {
+    const [open, setOpen] = useState(false)
+    const location = useLocation()
+
+    useEffect(() => {
+        setOpen(false)
+    }, [location.pathname])
+
     return (
         <>
-            <div className='min-h-[calc(100vh-120px)] flex'>
+            <Navbar
+                variant="dashboard"
+                onMenuClick={() => setOpen(prev => !prev)}
+                open={open}
+            />
 
-                <aside className={`min-h-full w-full max-w-60 customShadow pt-20 bg-white shadow-2xl absolute lg:relative`}>
+            <div className="flex min-h-[calc(130vh-120px)] pt-16 bg-slate-100">
 
-                    <div className='p-4 flex flex-col gap-1'>
-                        <SidebarItems />
+                {/* Overlay (mobile) */}
+                {open && (
+                    <div
+                        className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+                        onClick={() => setOpen(false)}
+                    />
+                )}
+
+                {/* Sidebar */}
+                <aside
+                    className={`
+                        fixed lg:relative z-40
+                        w-60 bg-white shadow-2xl
+                        h-[calc(130vh-120px)]
+                        transition-transform duration-300
+                        ${open ? "translate-x-0" : "-translate-x-full"}
+                        lg:translate-x-0
+                    `}
+                >
+                    <div className="p-4 pt-6 overflow-y-auto">
+                        <SidebarItems closeSidebar={() => setOpen(false)} />
                     </div>
-
                 </aside>
 
-                <main className='w-full p-4 bg-slate-100'>
+                {/* Main content */}
+                <main className="flex-1 p-10 lg:ml-10">
                     <Outlet />
                 </main>
+
             </div>
         </>
     )
