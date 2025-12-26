@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, } from "react";
 import SummaryApi from "../../apis";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const AddCourses = () => {
+
+  const navigate=useNavigate();
+
   const [formData, setFormData] = useState({
     title: "",
     heading: "",
@@ -91,6 +95,7 @@ const AddCourses = () => {
       }
 
       toast.success("Course added successfully!");
+      navigate("/educator-dashboard/My-courses")
 
       // Reset form
       setFormData({

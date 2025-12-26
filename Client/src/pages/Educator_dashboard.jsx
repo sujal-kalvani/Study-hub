@@ -46,7 +46,7 @@ export default function Educator_dashboard() {
                 </aside>
 
                 {/* Main content */}
-                <main className="flex-1 p-10 lg:ml-10">
+                <main className="flex-1 p-10 lg:ml-10 overflow-scroll TABLE">
                     <Outlet />
                 </main>
 

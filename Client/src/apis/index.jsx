@@ -40,6 +40,14 @@ const SummaryApi={
     AddCourses:{
         url:`${backendDomain}/create-course`,
         method:"post"
+    },
+    getCourses:{
+        url:`${backendDomain}/get-courses`,
+        method:"get"
+    },
+    courseStatusToggle:{
+        url:`${backendDomain}/course-status-toggle`,
+        method:"put"
     }
 }
 

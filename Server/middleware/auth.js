@@ -15,8 +15,8 @@ const auth = (req, res, next) => {
     req.userId = decoded.id; 
     req.user = decoded;
 
-    console.log(req.userId);
-    console.log(req.user);
+    // console.log(req.userId);
+    // console.log(req.user);
 
     next();
   } catch (error) {

@@ -28,6 +28,19 @@ const courseSchema=new mongoose.Schema({
       type: ObjectId,
       ref: "user",     
       required: true
+    },
+    Earnings:{
+        type:Number,
+        default:0
+    },
+    studentEnrolled:{
+        type:Number,
+        default:0
+    },
+    CourseStatus:{
+        type:String,
+        enum:["Live","Private"],
+        default:"Live"
     }
 },
 { timestamps: true });
