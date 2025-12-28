@@ -2,9 +2,7 @@ const userModel=require('../../models/User/userModel')
 
 const getCourses = async (req, res) => {
   try {
-    // console.log("Called");
     const user = await userModel.findById(req.userId).populate("createdCourses");
-    // console.log(user);
     
     if (!user) {
       return res.status(404).json({ message: "User not found" });

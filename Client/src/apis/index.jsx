@@ -45,6 +45,10 @@ const SummaryApi={
         url:`${backendDomain}/get-courses`,
         method:"get"
     },
+    getFullcard:{
+        url:`${backendDomain}/course`,
+        method:"get"
+    },
     courseStatusToggle:{
         url:`${backendDomain}/course-status-toggle`,
         method:"put"

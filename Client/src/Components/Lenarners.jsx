@@ -15,7 +15,7 @@ const Lenarners = () => {
   ]
 
   return (
-    <div className="mt-12 flex flex-col gap-6 items-center">
+    <div className="mt-12 flex flex-col gap-6 items-center mb-12">
       <p className="text-gray-500 text-center">Trusted by learners from</p>
 
       <div className="flex flex-wrap justify-center gap-8 items-center">

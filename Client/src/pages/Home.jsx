@@ -1,7 +1,9 @@
 import React from 'react'
 import Lenarners from '../Components/Lenarners'
+import CourseCard from '../Components/user/CourseCard';
 
 const Home = () => {
+
   return (
     <div className="min-h-screen px-4 flex flex-col items-center gap-8 text-center mt-48">
 
@@ -61,6 +63,9 @@ const Home = () => {
       {/* Learners Section */}
       <Lenarners />
 
+    {/* Course Cards */}
+
+      <CourseCard/>
     </div>
   )
 }

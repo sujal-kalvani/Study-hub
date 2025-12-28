@@ -12,6 +12,7 @@ import Dashbaord from "../Components/Educator/Dashbaord";
 import AddCourses from "../Components/Educator/AddCourses";
 import MyCourses from "../Components/Educator/MyCourses";
 import StudentEnrolled from "../Components/Educator/StudentEnrolled"
+import CardDetails from "../Components/user/CardDetails";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,8 @@ const router = createBrowserRouter([
       { path: "/signup", element: <SignUp /> },
       { path: "/signin", element: <SignIn /> },
       { path: "/changePassword", element: <ChangePassword /> },
+      { path:"/course-card/:id", element:<CardDetails/>},
+
       {
         path: "/educator-dashboard", element: <Educator_dashboard />,
         children: [

@@ -27,6 +27,7 @@ app.use("/become-educator",require("./routes/become_educator_routes.js"))
 app.use("/create-course",require('./routes/AddCourses.js'))
 app.use("/get-courses",require("./routes/getCourserouter.js"))
 app.use("/course-status-toggle",require("./routes/CourseStatusRoutes.js"))
+app.use("/course",require('./routes/getFullcardInfo.js'))
 
 // connect DB and start server
 connectDB().then(() => {
