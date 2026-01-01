@@ -35,7 +35,6 @@ async function signupController(req,res)
             password : hashPassword
         }
 
-        
         const userData = new usermodel(payload)
         const saveUser = await userData.save()
 

@@ -24,7 +24,7 @@ export default function Educator_dashboard() {
                 {/* Overlay (mobile) */}
                 {open && (
                     <div
-                        className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+                        className="fixed inset-0 bg-black/40 z-30 lg:hidden"
                         onClick={() => setOpen(false)}
                     />
                 )}
@@ -32,7 +32,7 @@ export default function Educator_dashboard() {
                 {/* Sidebar */}
                 <aside
                     className={`
-                        fixed lg:relative z-40
+                        fixed lg:relative z-30
                         w-60 bg-white shadow-2xl
                         h-[calc(130vh-120px)]
                         transition-transform duration-300

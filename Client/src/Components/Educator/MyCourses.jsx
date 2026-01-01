@@ -6,6 +6,9 @@ const MyCourses = () => {
   const token = localStorage.getItem("token");
   const [courses, SetCourses] = useState([]);
 
+  console.log(token);
+  
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {

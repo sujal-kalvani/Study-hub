@@ -10,17 +10,13 @@ const CourseCard = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch(SummaryApi.getCourses.url, {
-          method: SummaryApi.getCourses.method,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await fetch(SummaryApi.getAllCourses.url, {
+          method: SummaryApi.getAllCourses.method,
         });
 
         const data = await response.json();
-
-        setCourses(data.user.createdCourses);
-        setEducator(data.user.name);
+        
+        setCourses(data.courses);
       } catch (error) {
         console.error("Failed to fetch courses", error);
       }
@@ -59,9 +55,9 @@ const CourseCard = () => {
                   {course.title}
                 </h2>
 
-                <p className="text-sm text-gray-500 text-left">
+                {/* <p className="text-sm text-gray-500 text-left">
                   {educator}
-                </p>
+                </p> */}
 
                 <div className="flex items-center gap-1 text-sm">
                   <span className="font-medium">4.5</span>

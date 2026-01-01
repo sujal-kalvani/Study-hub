@@ -13,6 +13,8 @@ import AddCourses from "../Components/Educator/AddCourses";
 import MyCourses from "../Components/Educator/MyCourses";
 import StudentEnrolled from "../Components/Educator/StudentEnrolled"
 import CardDetails from "../Components/user/CardDetails";
+import Payment_success from "../pages/Payment_success";
+import Payment_failed from "../pages/Payment_failed";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +27,8 @@ const router = createBrowserRouter([
       { path: "/signin", element: <SignIn /> },
       { path: "/changePassword", element: <ChangePassword /> },
       { path:"/course-card/:id", element:<CardDetails/>},
+      { path:"/payment-success", element:<Payment_success/>},
+      { path:"/payment-fail", element:<Payment_failed/>},
 
       {
         path: "/educator-dashboard", element: <Educator_dashboard />,

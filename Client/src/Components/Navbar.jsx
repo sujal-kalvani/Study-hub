@@ -107,14 +107,13 @@ export default function Navbar({ variant = "full", onMenuClick, open }) {
   }
 
   return (
-    <nav className="bg-white shadow-md fixed w-full z-50 top-0">
+    <nav className="bg-white shadow-md fixed w-full z-40 top-0">
       <div className={`${variant === "dashboard" ? "max-w-full" : "max-w-7xl"} mx-auto px-4 sm:px-6 lg:px-8 `}>
         <div className="flex justify-between items-center h-16">
           {variant === "dashboard" && (
             <button className="lg:hidden mr-3 text-xl" onClick={onMenuClick}>
 
               <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
                 {open ? <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -137,11 +136,11 @@ export default function Navbar({ variant = "full", onMenuClick, open }) {
           {/* Desktop Menu */}
           {!isAuthenticated && (
             <div className="hidden md:flex items-center gap-6">
-              <Link to="/signin" className="text-blue-600 hover:underline">
+              <Link to="/signin" className="text-blue-600 hover:underline" onClick={() => dispatch(toggleState())}>
                 Login
               </Link>
               <Link
-                to="/signup"
+                to="/signup" onClick={() => dispatch(toggleState())}
                 className="px-5 py-2 bg-blue-600 text-white rounded-lg"
               >
                 Create Account

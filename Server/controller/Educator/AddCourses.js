@@ -1,11 +1,14 @@
 const Course = require("../../models/Educator/CourseModel");
 const User = require("../../models/User/userModel");
+const Chapter = require("../../models/Educator/ChapterModel");
 
 const AddCourse = async (req, res) => {
   try {
     const thumbnail = req.file
       ? `/images/courses/${req.file.filename}`
       : null;
+      
+      console.log(req.body);
 
     // 1️⃣ Create course in Course collection
     const course = await Course.create({
@@ -14,13 +17,14 @@ const AddCourse = async (req, res) => {
       description: req.body.description,
       price: Number(req.body.price),
       thumbnail,
-      educator: req.userId
+      educator: req.userId,
+      previewUrl:req.body.previewUrl
     });
-
-    // 2️⃣ Embed full course object into user's createdCourses
+  
+    
     await User.findByIdAndUpdate(
       req.userId,
-      { $push: { createdCourses: course } }, // push entire object
+      { $push: { createdCourses: course } }, 
       { new: true }
     );
 

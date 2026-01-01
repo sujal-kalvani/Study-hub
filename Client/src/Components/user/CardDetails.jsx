@@ -1,15 +1,45 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import SummaryApi from "../../apis";
+import { CgPlayButtonO } from "react-icons/cg";
 
 const CardDetails = () => {
     const { id } = useParams();
     const token = localStorage.getItem("token");
-    const [course, setCourse] = useState(null);
 
+    const [course, setCourse] = useState(null);
+    const [video, setVideo] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const videoRef = useRef(null);
+
+    // 🔹 Convert YouTube URL to EMBED URL
+    const getEmbedUrl = (url) => {
+        if (!url) return "";
+
+        if (url.includes("youtu.be")) {
+            const id = url.split("youtu.be/")[1].split("?")[0];
+            return `https://www.youtube.com/embed/${id}`;
+        }
+
+        if (url.includes("watch?v=")) {
+            const id = url.split("v=")[1].split("&")[0];
+            return `https://www.youtube.com/embed/${id}`;
+        }
+
+        if (url.includes("/embed/")) {
+            return url;
+        }
+
+        return "";
+    };
+
+    // 🔹 Fetch Course
     useEffect(() => {
         const fetchCourse = async () => {
             try {
+                if (!id) return;
+
                 const response = await fetch(
                     `${SummaryApi.getFullcard.url}/${id}`,
                     {
@@ -30,97 +60,116 @@ const CardDetails = () => {
         fetchCourse();
     }, [id, token]);
 
+    // 🔹 Stripe Checkout (NEW FLOW)
+    const payment = async () => {
+        try {
+            setLoading(true);
+
+            const response = await fetch(SummaryApi.onlinePayment.url, {
+                method: SummaryApi.onlinePayment.method,
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    data: [course], // 
+                }),
+            });
+
+            const session = await response.json();
+
+            if (!response.ok || !session.url) {
+                throw new Error(session.message || "Payment failed");
+            }
+
+            // ✅ Redirect to Stripe Checkout
+            window.location.href = session.url;
+
+        } catch (error) {
+            console.error("Payment Error:", error.message);
+            alert("Payment failed. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     if (!course) return <p className="text-center mt-20">Loading...</p>;
+
     if (course.CourseStatus !== "Live")
         return <p className="text-center mt-20">Course not available</p>;
 
     return (
-        <div className="flex flex-col lg:flex-row justify-center items-start
-                        mt-28 w-full gap-10
-                        px-4 sm:px-8 lg:px-28 mb-10">
+        <div className="flex flex-col lg:flex-row justify-center items-start mt-28 w-full gap-10 px-4 sm:px-8 lg:px-28 mb-10">
 
-            {/* RIGHT CARD (FIRST ON MOBILE) */}
-            <div className="w-full lg:w-[35%] bg-white shadow-md
-                            hover:shadow-lg transition rounded-lg
-                            h-fit order-1 lg:order-2 sticky lg:top-28">
-
-                <img
-                    src={`http://localhost:8000${course.thumbnail}`}
-                    className="w-full h-[30%] object-cover rounded-t-lg"
-                    alt="Course"
-                />
+            {/* RIGHT CARD */}
+            <div
+                ref={videoRef}
+                className="w-full lg:w-[35%] bg-white shadow-md hover:shadow-lg transition rounded-lg h-fit order-1 lg:order-2 sticky lg:top-28"
+            >
+                <div className="relative flex justify-center items-center">
+                    {video ? (
+                        <iframe
+                            className="w-full rounded-t-lg"
+                            height="315"
+                            src={getEmbedUrl(course.previewUrl)}
+                            title="YouTube video player"
+                            frameBorder="0"
+                            allowFullScreen
+                        ></iframe>
+                    ) : (
+                        <img
+                            src={`http://localhost:8000${course.thumbnail}`}
+                            className="w-full h-[30%] object-cover rounded-t-lg"
+                            alt="Course"
+                        />
+                    )}
+                </div>
 
                 <div className="p-4 flex flex-col gap-3">
-                    <h2 className="text-xl font-bold">
-                        {course.title}
-                    </h2>
+                    <h2 className="text-xl font-bold">{course.title}</h2>
+                    <p className="text-gray-500">{course.educator.name}</p>
+                    <p className="text-3xl font-bold">₹{course.price}</p>
 
-                    <p className="text-gray-500">
-                        {course.educator.name}
-                    </p>
-
-                    <p className="text-3xl font-bold">
-                        ₹{course.price}
-                    </p>
-
-                    <div className="flex items-center gap-1">
-                        <span className="text-orange-500 text-xl">★</span>
-                        <span className="text-lg">
-                            4.5 (Ratings)
-                        </span>
-                    </div>
-
-                    <button className="h-10 bg-blue-600 text-white rounded
-                                       hover:bg-blue-700 transition">
-                        Enroll Now
+                    <button
+                        disabled={loading}
+                        onClick={payment}
+                        className={`h-10 text-white rounded transition
+                            ${loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"}`}
+                    >
+                        {loading ? "Redirecting..." : "Enroll Now"}
                     </button>
-
-                    <div className="mt-4">
-                        <p className="text-lg font-bold text-gray-800 mb-2">
-                            What's in the course?
-                        </p>
-
-                        <ul className="list-disc ml-4 text-sm text-gray-500 space-y-1">
-                            <li>Lifetime access with free updates.</li>
-                            <li>Step-by-step, hands-on project guidance.</li>
-                            <li>Downloadable resources and source code.</li>
-                            <li>Quizzes to test your knowledge.</li>
-                            <li>Certificate of completion.</li>
-                        </ul>
-                    </div>
                 </div>
             </div>
 
-            {/* LEFT CONTENT (SECOND ON MOBILE) */}
+            {/* LEFT CONTENT */}
             <div className="w-full lg:w-[55%] flex flex-col gap-4 order-2 lg:order-1">
-                <h2 className="text-3xl lg:text-4xl font-extrabold">
-                    {course.title}
-                </h2>
-
-                <p className="text-gray-500 text-lg lg:text-xl">
-                    {course.heading}
-                </p>
+                <h2 className="text-3xl lg:text-4xl font-extrabold">{course.title}</h2>
+                <p className="text-gray-500 text-lg">{course.heading}</p>
 
                 <div className="flex items-center gap-1 text-lg">
                     <span className="font-medium">4.5</span>
                     <span className="text-orange-500">★★★★☆</span>
-                    <span className="text-gray-400">(122)</span>
                 </div>
 
                 <p className="text-lg">
-                    Course By{" "}
-                    <span className="text-blue-600 underline">
-                        {course.educator.name}
-                    </span>
+                    Course By <span className="text-blue-600 underline">{course.educator.name}</span>
                 </p>
 
-                <p className="text-xl font-bold mt-4">
-                    Course Description
-                </p>
+                <div className="flex items-center justify-center px-3 py-2 rounded-lg w-fit mx-auto">
+                    <CgPlayButtonO
+                        className="bg-white rounded-full w-10 h-10 cursor-pointer"
+                        onClick={() => {
+                            setVideo(!video);
+                            setTimeout(() => {
+                                videoRef.current?.scrollIntoView({ behavior: "smooth" });
+                            }, 200);
+                        }}
+                    />
+                    <p className="bg-white px-2 py-1 rounded-md">Watch Preview</p>
+                </div>
 
-                <p className="text-base lg:text-lg whitespace-pre-line text-gray-700">
-                    {course.description}
-                </p>
+                <p className="text-xl font-bold mt-4">Course Description</p>
+                <p className="text-gray-700">{course.description}</p>
             </div>
         </div>
     );

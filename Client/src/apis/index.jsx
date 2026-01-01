@@ -1,57 +1,69 @@
-const backendDomain="http://localhost:8000";
+const backendDomain = "http://localhost:8000";
 
-const SummaryApi={
-    signup : {
-        url : `${backendDomain}/signup`,
-        method : "post"
-    },
-
-    login:{
-        url:`${backendDomain}/signin`,
-        method:"post"
+const SummaryApi = {
+    signup: {
+        url: `${backendDomain}/signup`,
+        method: "post"
     },
 
-    profile:{
-        url:`${backendDomain}/profile`,
-        method:"put"
-    },
-    
-    getProfile:{
-        url:`${backendDomain}/me`,
-        method:"get"
+    login: {
+        url: `${backendDomain}/signin`,
+        method: "post"
     },
 
-    changepassword:{
-        url:`${backendDomain}/ChangePassword`,
-        method:"post",
+    profile: {
+        url: `${backendDomain}/profile`,
+        method: "put"
     },
-    ResetPassword:{
-        url:`${backendDomain}/ResetPassword`,
-        method:"post",
+
+    getProfile: {
+        url: `${backendDomain}/me`,
+        method: "get"
     },
-    verifyOtp:{
-        url:`${backendDomain}/verifyOtp`,
-        method:"post"
+
+    changepassword: {
+        url: `${backendDomain}/ChangePassword`,
+        method: "post",
     },
-    becomeEducator:{
-        url:`${backendDomain}/become-educator`,
-        method:"put"
+    ResetPassword: {
+        url: `${backendDomain}/ResetPassword`,
+        method: "post",
     },
-    AddCourses:{
-        url:`${backendDomain}/create-course`,
-        method:"post"
+    verifyOtp: {
+        url: `${backendDomain}/verifyOtp`,
+        method: "post"
     },
-    getCourses:{
-        url:`${backendDomain}/get-courses`,
-        method:"get"
+    becomeEducator: {
+        url: `${backendDomain}/become-educator`,
+        method: "put"
     },
-    getFullcard:{
-        url:`${backendDomain}/course`,
-        method:"get"
+    AddCourses: {
+        url: `${backendDomain}/create-course`,
+        method: "post"
     },
-    courseStatusToggle:{
-        url:`${backendDomain}/course-status-toggle`,
-        method:"put"
+    AddChapters: {
+        url: `${backendDomain}/create-chapter`,
+        method: "post"
+    },
+    getCourses: {
+        url: `${backendDomain}/get-courses`,
+        method: "get"
+    },
+    getAllCourses: {
+        url: `${backendDomain}/get-all-courses`,
+        method: "get"
+    },
+    getFullcard: {
+        url: `${backendDomain}/course`,
+        method: "get"
+    },
+    courseStatusToggle: {
+        url: `${backendDomain}/course-status-toggle`,
+        method: "put"
+    },
+    onlinePayment: {
+        url: `${backendDomain}/online-payment`,
+        method: "post"
     }
 }
 

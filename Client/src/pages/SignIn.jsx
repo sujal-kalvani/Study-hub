@@ -24,8 +24,8 @@ export default function SignIn() {
   const [errors, setErrors] = useState({});
 
   // prevent scroll
-  if (signUp) document.body.classList.add("overflow-hidden");
-  else document.body.classList.remove("overflow-hidden");
+  // if (signUp) document.body.classList.add("overflow-hidden");
+  // else document.body.classList.remove("overflow-hidden");
 
   const validateForm = () => {
     const newErrors = {};

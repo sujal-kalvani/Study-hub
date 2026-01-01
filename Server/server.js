@@ -28,6 +28,9 @@ app.use("/create-course",require('./routes/AddCourses.js'))
 app.use("/get-courses",require("./routes/getCourserouter.js"))
 app.use("/course-status-toggle",require("./routes/CourseStatusRoutes.js"))
 app.use("/course",require('./routes/getFullcardInfo.js'))
+app.use("/create-chapter",require("./routes/AddChapter.js"))
+app.use("/online-payment",require("./routes/payment_route.js"))
+app.use("/get-all-courses",require("./routes/getAllCourseRoute.js"))
 
 // connect DB and start server
 connectDB().then(() => {
