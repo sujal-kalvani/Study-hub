@@ -31,6 +31,9 @@ app.use("/course",require('./routes/getFullcardInfo.js'))
 app.use("/create-chapter",require("./routes/AddChapter.js"))
 app.use("/online-payment",require("./routes/payment_route.js"))
 app.use("/get-all-courses",require("./routes/getAllCourseRoute.js"))
+app.use('/verify-payment',require("./routes/verify_payment_route.js"))
+app.use("/Enrolled-Student",require("./routes/EnrolledStudentsRoute.js"))
+app.use("/dashbord-info",require('./routes/dashbaord_routes.js'))
 
 // connect DB and start server
 connectDB().then(() => {

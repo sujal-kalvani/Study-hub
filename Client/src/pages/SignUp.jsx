@@ -25,10 +25,6 @@ const SignUp = () => {
   // Validation Errors
   const [errors, setErrors] = useState({});
 
-  // Disable scroll when modal opens
-  if (signUp) document.body.classList.add("overflow-hidden");
-  else document.body.classList.remove("overflow-hidden");
-
   // Validation Function
   const validateForm = () => {
     const newErrors = {};

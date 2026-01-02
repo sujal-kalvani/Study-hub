@@ -7,7 +7,6 @@ const MyCourses = () => {
   const [courses, SetCourses] = useState([]);
 
   console.log(token);
-  
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -66,7 +65,7 @@ const MyCourses = () => {
       <p className="font-semibold text-lg mb-3">My Courses</p>
 
       <div>
-        <table className="w-full border-collapse border border-gray-200 shadow-lg">
+        <table className="w-full border-collapse border border-gray-200 shadow-lg min-w-96 ">
           <thead>
             <tr className="bg-blue-600 text-white h-14 font-bold text-center">
               <th>Sr.</th>

@@ -1,40 +1,52 @@
-const stripe = require("stripe")(process.env.payment_secret_key)
+const stripe = require("stripe")(process.env.payment_secret_key);
+
 const onlinePayment = async (req, res) => {
+  try {
+    const { course } = req.body;
+   
+    const userId = req.userId; // from auth middleware
 
-    try {
-        const { data } = req.body
+    console.log("User Id",userId);
+    console.log("Course Id",course._id);
 
-        const line_items = data.map((item) => ({
-            price_data: {
-                currency: "inr",
-                product_data: {
-                    name: item.title,
-                },
-                unit_amount: Math.round(item.price * 100), // INR in paise
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+
+      line_items: [
+        {
+          price_data: {
+            currency: "inr",
+            product_data: {
+              name: course.title,
             },
-            quantity: 1,
-        }));
+            unit_amount: Math.round(course.price * 100),
+          },
+          quantity: 1,
+        },
+      ],
 
-        const session = await stripe.checkout.sessions.create({
-            payment_method_types: ["card"],
-            mode: "payment",
-            line_items,
-            success_url: `${process.env.FRONTEND_URL}/payment-success`,
-            cancel_url: `${process.env.FRONTEND_URL}/payment-fail`,
-        });
+      // ✅ store info safely
+       metadata: {
+        userId: userId.toString(),
+        courseId: course._id.toString(),
+      },
 
-        res.status(201).json({
-            url: session.url,
-        });
+      // ✅ VERY IMPORTANT
+      success_url: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.FRONTEND_URL}/payment-fail`,
+    });
 
+    // ✅ FRONTEND STILL GETS URL
+    res.status(200).json({
+      url: session.url,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+};
 
-    } catch (error) {
-        res.status(400).json({
-            message: error.message || error,
-            error: true,
-            success: false,
-        });
-    }
-}
-
-module.exports = onlinePayment
+module.exports = onlinePayment;

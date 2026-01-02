@@ -64,6 +64,18 @@ const SummaryApi = {
     onlinePayment: {
         url: `${backendDomain}/online-payment`,
         method: "post"
+    },
+    verifyPayment:{
+        url:`${backendDomain}/verify-payment`,
+        method:"post"
+    },
+    EnrolledStudent:{
+        url:`${backendDomain}/Enrolled-Student`,
+        method:"get"
+    },
+    dashbord:{
+        url:`${backendDomain}/dashbord-info`,
+        method:"get"
     }
 }
 

@@ -2,10 +2,13 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import SummaryApi from "../../apis";
 import { CgPlayButtonO } from "react-icons/cg";
+import { toast } from "react-toastify";
 
 const CardDetails = () => {
     const { id } = useParams();
     const token = localStorage.getItem("token");
+    // console.log(token);
+    
 
     const [course, setCourse] = useState(null);
     const [video, setVideo] = useState(false);
@@ -72,11 +75,16 @@ const CardDetails = () => {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    data: [course], // 
+                    course: course, 
                 }),
             });
 
             const session = await response.json();
+
+            if(response.ok && session.url)
+            {
+                toast.success("Payment Paid Successfully")
+            }
 
             if (!response.ok || !session.url) {
                 throw new Error(session.message || "Payment failed");
@@ -130,6 +138,7 @@ const CardDetails = () => {
                     <p className="text-gray-500">{course.educator.name}</p>
                     <p className="text-3xl font-bold">₹{course.price}</p>
 
+                    <div className="flex items-center gap-1"> <span className="text-orange-500 text-xl">★</span> <span className="text-lg">4.5 (Ratings)</span> </div>
                     <button
                         disabled={loading}
                         onClick={payment}
@@ -169,7 +178,7 @@ const CardDetails = () => {
                 </div>
 
                 <p className="text-xl font-bold mt-4">Course Description</p>
-                <p className="text-gray-700">{course.description}</p>
+                <p className="text-gray-700 whitespace-pre-line">{course.description}</p>
             </div>
         </div>
     );
