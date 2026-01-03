@@ -87,7 +87,7 @@ const SignUp = () => {
       <div className="h-screen">
         {signUp && (
           <div className="fixed inset-0 z-40 flex justify-center items-center">
-            <div className="absolute inset-0 bg-black opacity-50"></div>
+            <div className="absolute inset-0 bg-black opacity-0"></div>
 
             <div
               className="

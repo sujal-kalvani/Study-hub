@@ -76,6 +76,14 @@ const SummaryApi = {
     dashbord:{
         url:`${backendDomain}/dashbord-info`,
         method:"get"
+    },
+    getEnrolledCourses:{
+        url:`${backendDomain}/get-enrolled-courses`,
+        method:'get'
+    },
+    getTutorials:{
+        url:`${backendDomain}/get-tutorials`,
+        method:'get'
     }
 }
 

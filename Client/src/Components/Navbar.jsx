@@ -149,43 +149,47 @@ export default function Navbar({ variant = "full", onMenuClick, open }) {
           )}
 
           {isAuthenticated && (
-            <div className="hidden md:flex items-center gap-6">
-              {
-                educator === "educator" ? (
-                  variant === "dashboard" ? null : (
-                    <button className="cursor-pointer" onClick={educatorDashboard}>
-                      Educator Dashboard
+            <>
+
+              <div className="hidden md:flex items-center gap-6">
+                <Link to="enrolled-courses">Enrolled Courses</Link>
+                {
+                  educator === "educator" ? (
+                    variant === "dashboard" ? null : (
+                      <button className="cursor-pointer" onClick={educatorDashboard}>
+                        Educator Dashboard
+                      </button>
+                    )
+                  ) : (
+                    <button className="cursor-pointer" onClick={become_educator}>
+                      Become Educator
                     </button>
                   )
-                ) : (
-                  <button className="cursor-pointer" onClick={become_educator}>
-                    Become Educator
-                  </button>
-                )
-              }
-              <div
-                className="flex items-center gap-2 cursor-pointer"
-                onClick={handleIconClick}
-              >
-                {avatarUrl ? (
-                  <img
-                    src={avatarUrl}
-                    alt="profile"
-                    className="w-10 h-10 rounded-full"
-                  />
-                ) : (
-                  <CgProfile className="w-10 h-10" />
-                )}
-                <span className="font-medium">{profile?.name}</span>
-              </div>
+                }
+                <div
+                  className="flex items-center gap-2 cursor-pointer"
+                  onClick={handleIconClick}
+                >
+                  {avatarUrl ? (
+                    <img
+                      src={avatarUrl}
+                      alt="profile"
+                      className="w-10 h-10 rounded-full"
+                    />
+                  ) : (
+                    <CgProfile className="w-10 h-10" />
+                  )}
+                  <span className="font-medium">{profile?.name}</span>
+                </div>
 
-              <button
-                onClick={Logout}
-                className="flex items-center gap-1 text-red-500 hover:text-red-600"
-              >
-                Logout <IoLogOutOutline />
-              </button>
-            </div>
+                <button
+                  onClick={Logout}
+                  className="flex items-center gap-1 text-red-500 hover:text-red-600"
+                >
+                  Logout <IoLogOutOutline />
+                </button>
+              </div>
+            </>
           )}
 
           {/* Mobile Menu Button */}
@@ -221,7 +225,7 @@ export default function Navbar({ variant = "full", onMenuClick, open }) {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-white shadow-md px-4 pb-4 space-y-4">
+        <div className="md:hidden shadow-md px-4 pb-4 space-y-4 flex flex-col">
           {!isAuthenticated ? (
             <>
               <Link to="/signin" className="block py-2">Login</Link>
@@ -231,6 +235,7 @@ export default function Navbar({ variant = "full", onMenuClick, open }) {
               >
                 Create Account
               </Link>
+
             </>
           ) : (
             <>
@@ -242,14 +247,22 @@ export default function Navbar({ variant = "full", onMenuClick, open }) {
                     </button>
                   )
                 ) : (
-                  <button className="cursor-pointer" onClick={become_educator}>
-                    Become Educator
-                  </button>
+                  <>
+                    {/* <div className="flex flex-col justify-start"> */}
+                      <button className="cursor-pointer text-left mt-3 ml-3" onClick={become_educator}>
+                        Become Educator
+                      </button>
+
+                    {/* </div> */}
+                  </>
                 )
               }
+              <>
+            <Link to="enrolled-courses" className="ml-3">Enrolled Courses</Link>
+              </>
 
               <div
-                className="flex items-center gap-2 py-2 cursor-pointer"
+                className="flex items-center gap-2 py-2 cursor-pointer ml-2"
                 onClick={handleIconClick}
               >
 

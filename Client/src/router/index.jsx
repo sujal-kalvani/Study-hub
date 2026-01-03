@@ -15,6 +15,8 @@ import StudentEnrolled from "../Components/Educator/StudentEnrolled"
 import CardDetails from "../Components/user/CardDetails";
 import Payment_success from "../pages/Payment_success";
 import Payment_failed from "../pages/Payment_failed";
+import EnrolledCourses from "../Components/user/EnrolledCourses";
+import CourseStructure from "../Components/user/CourseStructure";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +31,12 @@ const router = createBrowserRouter([
       { path:"/course-card/:id", element:<CardDetails/>},
       { path:"/payment-success", element:<Payment_success/>},
       { path:"/payment-fail", element:<Payment_failed/>},
+      { 
+        path:"/enrolled-courses",element:<EnrolledCourses/>,
+      },
+      {
+        path:"/Course-tutorial/:id",element:<CourseStructure/>
+      },
 
       {
         path: "/educator-dashboard", element: <Educator_dashboard />,

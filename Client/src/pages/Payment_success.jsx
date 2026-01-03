@@ -29,6 +29,7 @@ const Payment_success = () => {
         const data = await response.json();
 
         if (response.ok) {
+          toast.success("Payment Paid Successfully")
           toast.success("Student Enrolled Successfully 🎉");
           navigate("/");
         } else {

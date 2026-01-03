@@ -8,7 +8,6 @@ const CardDetails = () => {
     const { id } = useParams();
     const token = localStorage.getItem("token");
     // console.log(token);
-    
 
     const [course, setCourse] = useState(null);
     const [video, setVideo] = useState(false);
@@ -75,22 +74,16 @@ const CardDetails = () => {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    course: course, 
+                    course: course,
                 }),
             });
 
             const session = await response.json();
 
-            if(response.ok && session.url)
-            {
-                toast.success("Payment Paid Successfully")
-            }
-
             if (!response.ok || !session.url) {
                 throw new Error(session.message || "Payment failed");
             }
 
-            // ✅ Redirect to Stripe Checkout
             window.location.href = session.url;
 
         } catch (error) {
@@ -112,8 +105,8 @@ const CardDetails = () => {
             {/* RIGHT CARD */}
             <div
                 ref={videoRef}
-                className="w-full lg:w-[35%] bg-white shadow-md hover:shadow-lg transition rounded-lg h-fit order-1 lg:order-2 sticky lg:top-28"
-            >
+                className="w-full lg:w-[35%] bg-white shadow-md hover:shadow-lg transition rounded-lg h-fit order-1 lg:order-2 sticky lg:top-28">
+
                 <div className="relative flex justify-center items-center">
                     {video ? (
                         <iframe
@@ -147,7 +140,9 @@ const CardDetails = () => {
                     >
                         {loading ? "Redirecting..." : "Enroll Now"}
                     </button>
+                <div class="pt-6"><p class="md:text-xl text-lg font-medium text-gray-800">What's in the course?</p><ul class="ml-4 pt-2 text-sm md:text-default list-disc text-gray-500"><li>Lifetime access with free updates.</li><li>Step-by-step, hands-on project guidance.</li><li>Downloadable resources and source code.</li><li>Quizzes to test your knowledge.</li><li>Certificate of completion.</li></ul></div>
                 </div>
+
             </div>
 
             {/* LEFT CONTENT */}

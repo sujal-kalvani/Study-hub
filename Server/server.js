@@ -34,6 +34,8 @@ app.use("/get-all-courses",require("./routes/getAllCourseRoute.js"))
 app.use('/verify-payment',require("./routes/verify_payment_route.js"))
 app.use("/Enrolled-Student",require("./routes/EnrolledStudentsRoute.js"))
 app.use("/dashbord-info",require('./routes/dashbaord_routes.js'))
+app.use("/get-enrolled-courses",require('./routes/getEnrolledCoursesRoute.js'))
+app.use('/get-tutorials',require("./routes/getTutorialsRoute.js"))
 
 // connect DB and start server
 connectDB().then(() => {
