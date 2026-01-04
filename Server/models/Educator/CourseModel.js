@@ -29,10 +29,6 @@ const courseSchema = new mongoose.Schema({
         ref: "user",
         required: true
     },
-    Earnings: {
-        type: Number,
-        default: 0
-    },
     studentEnrolled: {
         type: Number,
         default: 0
@@ -44,10 +40,10 @@ const courseSchema = new mongoose.Schema({
     },
 
     isFreePreview: {
-      type: Boolean,
-      default: false
+        type: Boolean,
+        default: false
     },
-    
+
     ratings: [
         {
             userId: {
@@ -61,9 +57,24 @@ const courseSchema = new mongoose.Schema({
                 max: 5,
                 required: true
             },
+            createdAt: {
+                type: Date,
+                default: Date.now
+            }
+        }
+    ],
+
+    reviews: [
+        {
+            userId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "user",
+                required: true
+            },
             review: {
                 type: String,
-                trim: true
+                trim: true,
+                required: true
             },
             createdAt: {
                 type: Date,
@@ -81,9 +92,9 @@ const courseSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    previewUrl:{
-        type:String,
-        default:null
+    previewUrl: {
+        type: String,
+        default: null
     }
 
 },

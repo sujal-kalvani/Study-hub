@@ -32,12 +32,6 @@ const userSchema = new mongoose.Schema(
       default: ""
     },
 
-    enrolledCourses: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "course"
-      }
-    ],
 
     createdCourses: [
       {

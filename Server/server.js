@@ -36,6 +36,9 @@ app.use("/Enrolled-Student",require("./routes/EnrolledStudentsRoute.js"))
 app.use("/dashbord-info",require('./routes/dashbaord_routes.js'))
 app.use("/get-enrolled-courses",require('./routes/getEnrolledCoursesRoute.js'))
 app.use('/get-tutorials',require("./routes/getTutorialsRoute.js"))
+app.use('/submit-ratings',require('./routes/submitRatingsRoute.js'))
+app.use("/submit-reviews",require("./routes/submitReviewRoute.js"))
+app.use("/get-ratings",require("./routes/getRatingRoute.js"))
 
 // connect DB and start server
 connectDB().then(() => {

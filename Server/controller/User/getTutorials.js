@@ -7,7 +7,7 @@ const getTutorials = async (req, res) => {
         courseId: new mongoose.Types.ObjectId(req.params.id),
     });
 
-    console.log(chapters);
+    // console.log(chapters);
 
     try {
         res.status(200).json({

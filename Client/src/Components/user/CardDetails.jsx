@@ -5,17 +5,29 @@ import { CgPlayButtonO } from "react-icons/cg";
 import { toast } from "react-toastify";
 
 const CardDetails = () => {
+
+    const formatDate = (date) => {
+        return new Date(date).toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+        });
+    }
+
     const { id } = useParams();
     const token = localStorage.getItem("token");
-    // console.log(token);
 
     const [course, setCourse] = useState(null);
     const [video, setVideo] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [ratings, setRatings] = useState(0);
+    const [date,SetDate]=useState(null)
 
+    const [totalRatings, SetTotalRatings] = useState(0)
+
+    const maxStars = 5;
     const videoRef = useRef(null);
 
-    // 🔹 Convert YouTube URL to EMBED URL
     const getEmbedUrl = (url) => {
         if (!url) return "";
 
@@ -36,7 +48,6 @@ const CardDetails = () => {
         return "";
     };
 
-    // 🔹 Fetch Course
     useEffect(() => {
         const fetchCourse = async () => {
             try {
@@ -59,10 +70,34 @@ const CardDetails = () => {
             }
         };
 
+        const getRatings = async () => {
+            try {
+                const response = await fetch(SummaryApi.getRatings.url, {
+                    method: SummaryApi.getRatings.method,
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    toast.error("Rating not found");
+                    return;
+                }
+
+                setRatings(data.r);
+                SetTotalRatings(data.total_ratings)
+                SetDate(data.date)
+                // toast.success("Rating Found");
+            } catch (error) {
+                console.error("Rating Error:", error.message);
+            }
+        };
+
         fetchCourse();
+        getRatings();
     }, [id, token]);
 
-    // 🔹 Stripe Checkout (NEW FLOW)
     const payment = async () => {
         try {
             setLoading(true);
@@ -73,19 +108,16 @@ const CardDetails = () => {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    course: course,
-                }),
+                body: JSON.stringify({ course }),
             });
 
             const session = await response.json();
 
             if (!response.ok || !session.url) {
-                throw new Error(session.message || "Payment failed");
+                throw new Error("Payment failed");
             }
 
             window.location.href = session.url;
-
         } catch (error) {
             console.error("Payment Error:", error.message);
             alert("Payment failed. Please try again.");
@@ -95,9 +127,10 @@ const CardDetails = () => {
     };
 
     if (!course) return <p className="text-center mt-20">Loading...</p>;
-
     if (course.CourseStatus !== "Live")
         return <p className="text-center mt-20">Course not available</p>;
+
+
 
     return (
         <div className="flex flex-col lg:flex-row justify-center items-start mt-28 w-full gap-10 px-4 sm:px-8 lg:px-28 mb-10">
@@ -105,8 +138,8 @@ const CardDetails = () => {
             {/* RIGHT CARD */}
             <div
                 ref={videoRef}
-                className="w-full lg:w-[35%] bg-white shadow-md hover:shadow-lg transition rounded-lg h-fit order-1 lg:order-2 sticky lg:top-28">
-
+                className="w-full lg:w-[35%] bg-white shadow-md hover:shadow-lg transition rounded-lg h-fit order-1 lg:order-2 sticky lg:top-28"
+            >
                 <div className="relative flex justify-center items-center">
                     {video ? (
                         <iframe
@@ -128,10 +161,14 @@ const CardDetails = () => {
 
                 <div className="p-4 flex flex-col gap-3">
                     <h2 className="text-xl font-bold">{course.title}</h2>
-                    <p className="text-gray-500">{course.educator.name}</p>
+                    <div className="flex gap-3">
+                        <p className="text-orange-500">{ratings}★</p>
+                        <span>|</span>
+                        <span>{formatDate(date)}</span>
+                    </div>
+                    {/* <p className="text-gray-500">{course.educator.name}</p> */}
                     <p className="text-3xl font-bold">₹{course.price}</p>
 
-                    <div className="flex items-center gap-1"> <span className="text-orange-500 text-xl">★</span> <span className="text-lg">4.5 (Ratings)</span> </div>
                     <button
                         disabled={loading}
                         onClick={payment}
@@ -140,23 +177,43 @@ const CardDetails = () => {
                     >
                         {loading ? "Redirecting..." : "Enroll Now"}
                     </button>
-                <div class="pt-6"><p class="md:text-xl text-lg font-medium text-gray-800">What's in the course?</p><ul class="ml-4 pt-2 text-sm md:text-default list-disc text-gray-500"><li>Lifetime access with free updates.</li><li>Step-by-step, hands-on project guidance.</li><li>Downloadable resources and source code.</li><li>Quizzes to test your knowledge.</li><li>Certificate of completion.</li></ul></div>
-                </div>
 
+                    <div class="pt-6"><p class="md:text-xl text-lg font-medium text-gray-800">What's in the course?</p><ul class="ml-4 pt-2 text-sm md:text-default list-disc text-gray-500"><li>Lifetime access with free updates.</li><li>Step-by-step, hands-on project guidance.</li><li>Downloadable resources and source code.</li><li>Quizzes to test your knowledge.</li><li>Certificate of completion.</li></ul></div>
+                </div>
             </div>
 
             {/* LEFT CONTENT */}
             <div className="w-full lg:w-[55%] flex flex-col gap-4 order-2 lg:order-1">
-                <h2 className="text-3xl lg:text-4xl font-extrabold">{course.title}</h2>
+                <h2 className="text-3xl lg:text-4xl font-extrabold">
+                    {course.title}
+                </h2>
                 <p className="text-gray-500 text-lg">{course.heading}</p>
 
-                <div className="flex items-center gap-1 text-lg">
-                    <span className="font-medium">4.5</span>
-                    <span className="text-orange-500">★★★★☆</span>
+                {/* ⭐⭐⭐☆☆ STAR RATING */}
+                <div className="flex items-center gap-2 text-lg">
+                    <span className="font-medium">{ratings}</span>
+                    <span>
+                        {[...Array(maxStars)].map((_, index) => (
+                            <span
+                                key={index}
+                                className={
+                                    index < ratings
+                                        ? "text-orange-500"
+                                        : "text-gray-300"
+                                }
+                            >
+                                {index < ratings ? "★" : "☆"}
+                            </span>
+                        ))}
+                    </span>
+                    <span>{"(" + totalRatings + ")"}</span>
                 </div>
 
                 <p className="text-lg">
-                    Course By <span className="text-blue-600 underline">{course.educator.name}</span>
+                    Course By{" "}
+                    <span className="text-blue-600 underline">
+                        {course.educator.name}
+                    </span>
                 </p>
 
                 <div className="flex items-center justify-center px-3 py-2 rounded-lg w-fit mx-auto">
@@ -169,11 +226,15 @@ const CardDetails = () => {
                             }, 200);
                         }}
                     />
-                    <p className="bg-white px-2 py-1 rounded-md">Watch Preview</p>
+                    <p className="bg-white px-2 py-1 rounded-md">
+                        Watch Preview
+                    </p>
                 </div>
 
                 <p className="text-xl font-bold mt-4">Course Description</p>
-                <p className="text-gray-700 whitespace-pre-line">{course.description}</p>
+                <p className="text-gray-700 whitespace-pre-line">
+                    {course.description}
+                </p>
             </div>
         </div>
     );

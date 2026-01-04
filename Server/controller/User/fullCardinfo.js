@@ -4,7 +4,7 @@ const getcourse = async (req, res) => {
 
     try {
         const course = await courseModel.findById(req.params.id).populate("educator", "name email");
-        console.log(course);
+        // console.log(course);
 
         
     if (!course) {

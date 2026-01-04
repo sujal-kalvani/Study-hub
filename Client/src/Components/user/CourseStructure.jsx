@@ -4,6 +4,8 @@ import SummaryApi from '../../apis'
 import { MdOutlineArrowDropDown } from "react-icons/md"
 import { CgPlayButtonO } from "react-icons/cg"
 import { IoClose } from "react-icons/io5"
+import Rating from './Rating'
+import { toast } from 'react-toastify'
 
 const CourseStructure = () => {
   const { id } = useParams()
@@ -11,6 +13,8 @@ const CourseStructure = () => {
   const [chapters, setChapters] = useState([])
   const [openIndex, setOpenIndex] = useState(null)
   const [activeVideo, setActiveVideo] = useState(null)
+  const [review, setReview] = useState("")
+  const token = localStorage.getItem("token")
 
   useEffect(() => {
     const fetchChapters = async () => {
@@ -55,6 +59,37 @@ const CourseStructure = () => {
     return ""
   }
 
+  const post_review = async () => {
+
+    if (!review.trim()) {
+      toast.error("Please write a review first")
+      return
+    }
+
+    try {
+      const response = await fetch(SummaryApi.submitReviews.url, {
+        method: SummaryApi.submitReviews.method,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ review, id }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to submit rating')
+      }
+
+      toast.success("Review Posted Successfully")
+      setReview("")
+
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
   return (
     <div className="min-h-screen mt-20 px-6 max-w-7xl mx-auto">
       <h2 className="text-2xl font-bold mb-6">Course Structure</h2>
@@ -75,9 +110,8 @@ const CourseStructure = () => {
               >
                 <div className="flex items-center gap-0">
                   <MdOutlineArrowDropDown
-                    className={`w-8 h-8 transition-transform duration-300 ${
-                      isOpen ? "rotate-180" : "rotate-0"
-                    }`}
+                    className={`w-8 h-8 transition-transform duration-300 ${isOpen ? "rotate-180" : "rotate-0"
+                      }`}
                   />
                   <p className="font-semibold md:text-xl">
                     Chapter {index + 1}: {chapter.title}
@@ -114,9 +148,9 @@ const CourseStructure = () => {
       {activeVideo && (
         // <div className="fixed inset-0 bg-black opacity-50 z-40 flex items-center justify-center">
         <div className="fixed inset-0 z-40 flex justify-center items-center">
-            <div className="absolute inset-0 bg-black opacity-50"></div>
+          <div className="absolute inset-0 bg-black opacity-50"></div>
           <div className="relative w-full max-w-4xl px-4 z-50">
-            
+
             {/* Close Button */}
             <button
               className="absolute -top-10 right-5 text-white text-3xl"
@@ -136,6 +170,37 @@ const CourseStructure = () => {
           </div>
         </div>
       )}
+
+
+      <div className='flex flex-col gap-7 py-3 mt-10 ml-4 mb-10'>
+
+        <h1 className='text-xl font-bold'>Review & Rate this Course</h1>
+
+        <div className='flex'>
+          <Rating initialRating={0} id={id} />
+        </div>
+
+        <div className="relative w-full">
+
+          <textarea
+            name="review"
+            id="review"
+            placeholder="Describe your experience (optional)"
+            className="w-full h-24 sm:h-20 border rounded-md p-6 pr-24 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 md:text-xl"
+            value={review}
+            onChange={(e) => setReview(e.target.value)}
+          />
+
+          <button
+            className=" absolute top-1/2 right-2 -translate-y-1/2 bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-md text-sm hover:bg-blue-700 transition"
+            onClick={post_review}
+          >
+            Post
+          </button>
+
+        </div>
+
+      </div>
     </div>
   )
 }

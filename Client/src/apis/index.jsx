@@ -84,6 +84,18 @@ const SummaryApi = {
     getTutorials:{
         url:`${backendDomain}/get-tutorials`,
         method:'get'
+    },
+    submitRatings:{
+        url:`${backendDomain}/submit-ratings`,
+        method:'post'
+    },
+    submitReviews:{
+        url:`${backendDomain}/submit-reviews`,
+        method:'post'
+    },
+    getRatings:{
+        url:`${backendDomain}/get-ratings`,
+        method:"post"
     }
 }
 

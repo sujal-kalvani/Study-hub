@@ -153,6 +153,7 @@ export default function Navbar({ variant = "full", onMenuClick, open }) {
 
               <div className="hidden md:flex items-center gap-6">
                 <Link to="enrolled-courses">Enrolled Courses</Link>
+                 <span>|</span>
                 {
                   educator === "educator" ? (
                     variant === "dashboard" ? null : (
