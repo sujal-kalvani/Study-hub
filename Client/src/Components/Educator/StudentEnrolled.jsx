@@ -18,6 +18,7 @@ const StudentEnrolled = () => {
         });
 
         const data = await response.json();
+
         console.log(data);
         SetStudents(data.enrollments)
 
@@ -71,12 +72,13 @@ const StudentEnrolled = () => {
                       className="w-10 h-10 rounded-full "
                     />
                     {student.user.name}
+
+
                   </td>
 
                   <td className="px-4 py-2">
                     {student.course.title}
                   </td>
-
                   <td className="px-4 py-2">
                     {formatDate(student.enrolledAt)}
                   </td>

@@ -1,29 +1,36 @@
-const Course = require("../../models/Educator/CourseModel")
+const Course = require("../../models/Educator/CourseModel");
 
 const getRatings = async (req, res) => {
+  try {
+    const courseId = req.body.id;
 
-    try {
+    const course = await Course.findById(courseId)
+      .select("averageRating ratings reviews createdAt")
+      .populate("reviews.userId", "name profileImage"); // 👈 CORRECT
 
-        // console.log(req.body);
-        const courseId = req.body.id
-
-        const ratings = await Course.findById(courseId).select("averageRating ratings createdAt")
-
-        const r=ratings.averageRating
- 
-        const total_ratings=ratings.ratings.length
-
-        const date=ratings.createdAt
-
-        res.json({
-            r,
-            total_ratings,
-            date,
-            success: true,
-        });
-    } catch (error) {
-        res.status(500).json({ message: "Failed to fetch profile" });
+    if (!course) {
+      return res.status(404).json({ success: false });
     }
-}
 
-module.exports = getRatings
+    const reviews = course.reviews.map((r) => ({
+      _id: r._id,
+      review: r.review,
+      createdAt: r.createdAt,
+      name: r.userId?.name || "Anonymous",
+      profileImage: r.userId?.profileImage || null,
+    }));
+
+    res.json({
+      success: true,
+      r: course.averageRating,
+      total_ratings: course.ratings.length,
+      date: course.createdAt,
+      reviews,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false });
+  }
+};
+
+module.exports = getRatings;

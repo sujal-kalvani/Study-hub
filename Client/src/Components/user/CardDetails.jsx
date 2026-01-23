@@ -3,8 +3,12 @@ import { useParams } from "react-router-dom";
 import SummaryApi from "../../apis";
 import { CgPlayButtonO } from "react-icons/cg";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
+import CourseRating from "./CourseRating";
 
 const CardDetails = () => {
+
+    const [AllRatings,setAllRatings]=useState(false)
 
     const formatDate = (date) => {
         return new Date(date).toLocaleDateString("en-GB", {
@@ -164,6 +168,8 @@ const CardDetails = () => {
                     <div className="flex gap-3">
                         <p className="text-orange-500">{ratings}★</p>
                         <span>|</span>
+                        <span onClick={()=>setAllRatings(!AllRatings)} className="cursor-pointer">View Ratings</span>
+                        <span>|</span>
                         <span>{formatDate(date)}</span>
                     </div>
                     {/* <p className="text-gray-500">{course.educator.name}</p> */}
@@ -191,7 +197,7 @@ const CardDetails = () => {
 
                 {/* ⭐⭐⭐☆☆ STAR RATING */}
                 <div className="flex items-center gap-2 text-lg">
-                    <span className="font-medium">{ratings}</span>
+                    <span className="font-medium ">{ratings}</span>
                     <span>
                         {[...Array(maxStars)].map((_, index) => (
                             <span
@@ -206,7 +212,10 @@ const CardDetails = () => {
                             </span>
                         ))}
                     </span>
-                    <span>{"(" + totalRatings + ")"}</span>
+                    <span className="underline cursor-pointer" onClick={()=>setAllRatings(!AllRatings)}>{"(" + ratings + ") Ratings"}</span>
+                    {
+                       AllRatings&&<CourseRating id={id} totalRatings={totalRatings} AllRatings={AllRatings} setAllRatings={setAllRatings}/>
+                    }
                 </div>
 
                 <p className="text-lg">

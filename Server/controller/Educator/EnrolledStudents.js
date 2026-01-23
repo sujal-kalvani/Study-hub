@@ -14,9 +14,11 @@ const getEducatorEnrollments = async (req, res) => {
       .populate("user",)
       .sort({ createdAt: -1 });
 
-    const filteredEnrollments = enrollments.filter(
-      (e) => e.course !== null
-    );
+      const filteredEnrollments = enrollments.filter(
+        (e) => e.course !== null
+      );
+      
+      console.log(filteredEnrollments)
 
     // console.log("Filtered Enrollments:", filteredEnrollments);
 
